@@ -1,4 +1,4 @@
-"""Foundations & APIs: Prompt engineering, tokens, LLM API integrations (OpenAI, Gemini, Anthropic)."""
+"""Foundations & APIs: Prompt engineering, tokens, LLM API integrations (OpenAI, Gemini, Anthropic), AI Gateway."""
 
 from src.foundations.base import (
     BaseExtractionService,
@@ -9,6 +9,13 @@ from src.foundations.base import (
 from src.foundations.gemini import GeminiExtractionService
 from src.foundations.openai import OpenAIExtractionService
 from src.foundations.claude import ClaudeExtractionService
+from src.foundations.gateway import (
+    ModelGateway,
+    TokenBudgetGuardrail,
+    GatewayAuditMetrics,
+    GatewayResponse,
+    GatewayStatus,
+)
 
 __all__ = [
     "BaseExtractionService",
@@ -18,4 +25,9 @@ __all__ = [
     "GeminiExtractionService",
     "OpenAIExtractionService",
     "ClaudeExtractionService",
+    "ModelGateway",
+    "TokenBudgetGuardrail",
+    "GatewayAuditMetrics",
+    "GatewayResponse",
+    "GatewayStatus",
 ]

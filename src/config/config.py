@@ -2,17 +2,23 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 class Settings(BaseSettings):
-  DEBUG: bool = Field(default=False, env="DEBUG")
-  DATABASE_URL: str = Field(..., env="DATABASE_URL")
-  SECRET_KEY: str = Field(..., env="SECRET_KEY")
-  API_TIMEOUT: int = Field(default=60, env="API_TIMEOUT")
+  DEBUG: bool = Field(default=False)
+  DATABASE_URL: str = Field(...)
+  SECRET_KEY: str = Field(...)
+  API_TIMEOUT: int = Field(default=60)
 
-  OPENAI_API_KEY: str = Field(default="", env="OPENAI_API_KEY")
-  ANTHROPIC_API_KEY: str = Field(default="", env="ANTHROPIC_API_KEY")
-  GEMINI_API_KEY: str = Field(..., env="GEMINI_API_KEY")
-  GEMINI_MODEL: str = Field(default="gemini-2.5-flash", env="GEMINI_MODEL")
-  DEFAULT_MODEL: str = Field(default="gemini-flash-latest", env="DEFAULT_MODEL")
-  DEFAULT_TEMPERATURE: float = Field(default=0.7, env="DEFAULT_TEMPERATURE")
+  OPENAI_API_KEY: str = Field(default="")
+  ANTHROPIC_API_KEY: str = Field(default="")
+  GEMINI_API_KEY: str = Field(...)
+  GEMINI_MODEL: str = Field(default="gemini-2.5-flash")
+  DEFAULT_MODEL: str = Field(default="gemini-flash-latest")
+  DEFAULT_TEMPERATURE: float = Field(default=0.7)
+
+  # AI Gateway Settings (Lab 02)
+  GATEWAY_MAX_INPUT_TOKENS: int = Field(default=2048)
+  GATEWAY_PRIMARY_MODEL: str = Field(default="gemini-2.5-flash")
+  GATEWAY_FALLBACK_MODELS: str = Field(default="gemini-3.5-flash-lite,gemini-flash-latest")
+  GATEWAY_TIMEOUT_SECONDS: float = Field(default=15.0)
 
   # read from .env file
   model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
