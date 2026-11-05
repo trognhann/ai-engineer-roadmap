@@ -1,4 +1,4 @@
-"""Foundations & APIs: Prompt engineering, tokens, LLM API integrations (OpenAI, Gemini, Anthropic), AI Gateway."""
+"""Foundations & APIs: Prompt engineering, tokens, LLM API integrations (OpenAI, Gemini, Anthropic), AI Gateway, Semantic Cache & Smart Tagger."""
 
 from src.foundations.base import (
     BaseExtractionService,
@@ -16,6 +16,14 @@ from src.foundations.gateway import (
     GatewayResponse,
     GatewayStatus,
 )
+from src.foundations.product_tagger import (
+    ContentSafetyAssessment,
+    ProductMetadata,
+    TaggingMetrics,
+    SmartFeatureResponse,
+    SemanticInMemoryCache,
+    SmartFeatureService,
+)
 
 __all__ = [
     "BaseExtractionService",
@@ -30,4 +38,10 @@ __all__ = [
     "GatewayAuditMetrics",
     "GatewayResponse",
     "GatewayStatus",
+    "ContentSafetyAssessment",
+    "ProductMetadata",
+    "TaggingMetrics",
+    "SmartFeatureResponse",
+    "SemanticInMemoryCache",
+    "SmartFeatureService",
 ]

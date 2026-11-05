@@ -11,13 +11,15 @@ ai-engineer-roadmap/
 ├── notebooks/                     # Thử nghiệm nhanh với Jupyter / Colab
 ├── tests/                         # Unit tests & integration tests (pytest)
 │   ├── __init__.py
-│   └── test_gateway.py            # Test suite cho ModelGateway & Guardrail
+│   ├── test_gateway.py            # Test suite cho ModelGateway & Guardrail (Lab 02)
+│   └── test_product_tagger.py     # Test suite cho Semantic Cache & Tagger (Lab 03)
 ├── src/
 │   ├── config/                    # Cấu hình dự án (Pydantic Settings, .env)
 │   │   ├── __init__.py
 │   │   └── config.py
 │   ├── foundations/               # Module Foundations & Core APIs
 │   │   ├── __init__.py
+│   │   ├── product_tagger.py      # [LAB 03] Smart Feature Service & Semantic In-Memory Cache
 │   │   ├── gateway.py             # [LAB 02] Production AI Gateway (SLA, Guardrail, Fallback)
 │   │   ├── base/                  # Thành phần chung dùng theo OOP
 │   │   │   ├── __init__.py
@@ -39,7 +41,7 @@ ai-engineer-roadmap/
 ├── .env.example                   # Biến môi trường mẫu
 ├── .env                           # Biến môi trường local (không commit lên git)
 ├── requirements.txt               # Danh sách thư viện phụ thuộc trực tiếp
-├── main.py                        # Entrypoint chạy demo Lab 01 & Lab 02
+├── main.py                        # Entrypoint chạy demo Lab 01, Lab 02 & Lab 03
 └── README.md
 ```
 
@@ -73,6 +75,22 @@ ai-engineer-roadmap/
 
 ---
 
+### 📌 Lab 03: Feature Engineering: Dynamic Smart Tagger & Semantic Cache
+* **Vị trí:** [`src/foundations/product_tagger.py`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/product_tagger.py)
+* **Mục tiêu:** Tự động sinh danh mục phân loại, gắn tags từ khóa và đánh giá an toàn nội dung cho sản phẩm/bài viết mới, đồng thời tối ưu hóa chi phí và tốc độ qua 2 lớp kiến trúc:
+
+#### 2 Lớp kiến trúc:
+1. **Semantic In-Memory Cache ([`SemanticInMemoryCache`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/product_tagger.py#L93)):**
+   * **Tier 1 (Exact Hash Match):** Bảng băm SHA-256 chuỗi văn bản đã chuẩn hóa, cho tốc độ phản hồi cực nhanh (`latency < 0.1ms`).
+   * **Tier 2 (Vector Cosine Match):** So khớp vector embedding (`gemini-embedding-001`) bằng Cosine Similarity trong RAM. Nếu độ tương đồng vượt ngưỡng (`threshold >= 0.85`), trả về kết quả ngay lập tức với **độ trễ < 5ms và $0 chi phí API**.
+2. **AI-driven Processing ([`SmartFeatureService`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/product_tagger.py#L152)):**
+   * Khi **Cache Miss**, ủy quyền qua [`ModelGateway`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/gateway.py) để gọi Gemini API trích xuất schema nghiêm ngặt:
+     * [`ProductMetadata`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/product_tagger.py#L42): `primary_category`, `sub_category`, `tags`, `suggested_title`.
+     * [`ContentSafetyAssessment`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/product_tagger.py#L31): `is_safe`, `risk_level` (`LOW`, `MEDIUM`, `HIGH`), `flagged_categories`, `safety_reason`.
+   * Tự động lưu vector và metadata vào cache sau khi trích xuất thành công để phục vụ các yêu cầu tiếp theo.
+
+---
+
 ## 🛠️ Hướng dẫn cài đặt & Chạy dự án
 
 1. **Chuẩn bị môi trường Python:**
@@ -91,12 +109,12 @@ ai-engineer-roadmap/
    cp .env.example .env
    ```
 
-4. **Chạy demo tổng hợp (Lab 01 & Lab 02):**
+4. **Chạy demo tổng hợp:**
    ```bash
    python main.py
    ```
 
 5. **Chạy Automated Unit Tests:**
    ```bash
-   pytest tests/test_gateway.py -v
+   pytest tests/ -v
    ```

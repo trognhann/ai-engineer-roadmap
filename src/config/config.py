@@ -20,6 +20,11 @@ class Settings(BaseSettings):
   GATEWAY_FALLBACK_MODELS: str = Field(default="gemini-3.5-flash-lite,gemini-flash-latest")
   GATEWAY_TIMEOUT_SECONDS: float = Field(default=15.0)
 
+  # Semantic Cache & Feature Tagger (Lab 03)
+  SEMANTIC_CACHE_THRESHOLD: float = Field(default=0.85)
+  SEMANTIC_CACHE_MAX_ENTRIES: int = Field(default=1000)
+  EMBEDDING_MODEL: str = Field(default="models/gemini-embedding-001")
+
   # read from .env file
   model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
