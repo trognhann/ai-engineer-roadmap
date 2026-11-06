@@ -1,7 +1,6 @@
-from src.foundations.gemini.extractor import (
+from src.foundations.providers.gemini.extractor import (
     GeminiExtractionService,
     RobustExtractionService,
 )
 
 __all__ = ["GeminiExtractionService", "RobustExtractionService"]
-

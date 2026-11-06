@@ -1,6 +1,6 @@
 import time
 import pytest
-from src.foundations.model_router import (
+from src.foundations.infrastructure.model_router import (
     ModelRouter,
     RouteType,
     UserIntent,

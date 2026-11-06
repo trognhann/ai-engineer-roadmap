@@ -18,7 +18,7 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 
 from src.config.config import settings
-from src.foundations.gateway import ModelGateway, GatewayStatus
+from src.foundations.infrastructure.gateway import ModelGateway, GatewayStatus
 
 logger = logging.getLogger("ModelRouter")
 

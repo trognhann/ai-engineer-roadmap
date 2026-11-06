@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 import google.generativeai as genai
 
 from src.config.config import settings
-from src.foundations.gateway import ModelGateway, GatewayStatus
+from src.foundations.infrastructure.gateway import ModelGateway, GatewayStatus
 
 logger = logging.getLogger("SmartFeatureService")
 

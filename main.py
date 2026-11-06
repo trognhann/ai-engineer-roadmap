@@ -117,7 +117,7 @@ def run_lab04_demo():
     print("▶ LAB 04: Dynamic Semantic Model Router & Cost Optimization")
     print("=" * 60)
 
-    from src.foundations.model_router import ModelRouter
+    from src.foundations import ModelRouter
 
     router = ModelRouter()
 

@@ -1,6 +1,6 @@
 import time
 import pytest
-from src.foundations.product_tagger import (
+from src.foundations.services.product_tagger import (
     SemanticInMemoryCache,
     ProductMetadata,
     ContentSafetyAssessment,

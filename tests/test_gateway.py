@@ -1,5 +1,5 @@
 import pytest
-from src.foundations.gateway import (
+from src.foundations.infrastructure.gateway import (
     TokenBudgetGuardrail,
     ModelGateway,
     GatewayStatus,
