@@ -25,6 +25,11 @@ class Settings(BaseSettings):
   SEMANTIC_CACHE_MAX_ENTRIES: int = Field(default=1000)
   EMBEDDING_MODEL: str = Field(default="models/gemini-embedding-001")
 
+  # Dynamic Model Router Settings (Lab 04)
+  ROUTER_LIGHTWEIGHT_MODEL: str = Field(default="gemini-3.5-flash-lite")
+  ROUTER_HEAVYWEIGHT_MODEL: str = Field(default="gemini-2.5-flash")
+  ROUTER_COMPLEXITY_THRESHOLD: float = Field(default=0.6)
+
   # read from .env file
   model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

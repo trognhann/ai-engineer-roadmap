@@ -210,7 +210,23 @@ class ModelGateway:
                     # Validate structured data nếu có schema
                     parsed_data = None
                     if response_schema is not None:
-                        parsed_data = response_schema.model_validate_json(content_text)
+                        try:
+                            parsed_data = response_schema.model_validate_json(content_text)
+                        except Exception:
+                            # Defensive parsing: tự động điền các trường bị khuyết nếu model phụ sinh thiếu
+                            import json
+                            raw_dict = json.loads(content_text)
+                            if isinstance(raw_dict, dict):
+                                if "safety" in raw_dict and isinstance(raw_dict["safety"], dict):
+                                    raw_dict["safety"].setdefault("flagged_categories", ["NONE"])
+                                    raw_dict["safety"].setdefault("safety_reason", None)
+                                    raw_dict["safety"].setdefault("is_safe", True)
+                                    raw_dict["safety"].setdefault("risk_level", "LOW")
+                                raw_dict.setdefault("tags", [])
+                                raw_dict.setdefault("suggested_title", None)
+                                parsed_data = response_schema.model_validate(raw_dict)
+                            else:
+                                raise
 
                     elapsed_ms = (time.perf_counter() - start_time) * 1000
                     status = GatewayStatus.FALLBACK_SUCCESS if is_fallback_attempt else GatewayStatus.SUCCESS

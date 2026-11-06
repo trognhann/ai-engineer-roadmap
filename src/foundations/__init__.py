@@ -1,4 +1,4 @@
-"""Foundations & APIs: Prompt engineering, tokens, LLM API integrations (OpenAI, Gemini, Anthropic), AI Gateway, Semantic Cache & Smart Tagger."""
+"""Foundations & APIs: Prompt engineering, tokens, LLM API integrations (OpenAI, Gemini, Anthropic), AI Gateway, Semantic Cache & Smart Tagger, Model Router."""
 
 from src.foundations.base import (
     BaseExtractionService,
@@ -24,6 +24,16 @@ from src.foundations.product_tagger import (
     SemanticInMemoryCache,
     SmartFeatureService,
 )
+from src.foundations.model_router import (
+    ModelRouter,
+    RouteType,
+    UserIntent,
+    RouterDecision,
+    CostAuditReport,
+    RouterExecutionResponse,
+    HeuristicIntentClassifier,
+    PricingEngine,
+)
 
 __all__ = [
     "BaseExtractionService",
@@ -44,4 +54,12 @@ __all__ = [
     "SmartFeatureResponse",
     "SemanticInMemoryCache",
     "SmartFeatureService",
+    "ModelRouter",
+    "RouteType",
+    "UserIntent",
+    "RouterDecision",
+    "CostAuditReport",
+    "RouterExecutionResponse",
+    "HeuristicIntentClassifier",
+    "PricingEngine",
 ]

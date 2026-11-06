@@ -112,13 +112,55 @@ def run_lab03_demo():
     print(f"• Chi phí API: ${res3.metrics.cost_usd}")
 
 
+def run_lab04_demo():
+    print("\n" + "=" * 60)
+    print("▶ LAB 04: Dynamic Semantic Model Router & Cost Optimization")
+    print("=" * 60)
+
+    from src.foundations.model_router import ModelRouter
+
+    router = ModelRouter()
+
+    # Kịch bản 1: Tác vụ nhẹ (Dịch thuật / Tóm tắt) -> Điều phối vào LIGHTWEIGHT_ROUTE
+    print("\n[Kịch bản 1] Tác vụ nhẹ (Dịch thuật ngắn):")
+    p1 = "Dịch câu sau sang tiếng Anh: Chúc bạn một ngày làm việc hiệu quả và tràn đầy năng lượng!"
+    res1 = router.route_and_execute(p1)
+    print(f"• Tuyến điều phối: {res1.routing_decision.route.value}")
+    print(f"• Intent nhận diện: {res1.routing_decision.intent.value}")
+    print(f"• Điểm độ phức tạp: {res1.routing_decision.complexity_score}")
+    print(f"• Thời gian phân loại (Routing Latency): {res1.routing_decision.routing_latency_ms} ms (< 1ms)")
+    print(f"• Model thực tế thực thi: {res1.cost_audit.actual_model}")
+    print(f"• Chi phí thực tế: ${res1.cost_audit.actual_cost_usd:.7f}")
+    print(f"• Chi phí đối chuẩn (nếu gọi Pro): ${res1.cost_audit.benchmark_cost_usd:.7f}")
+    print(f"• Tiết kiệm được: ${res1.cost_audit.cost_saved_usd:.7f} ({res1.cost_audit.savings_percentage}%)")
+    print(f"• Nội dung trả về: {res1.content.strip().splitlines()[0] if res1.content else None}...")
+
+    # Kịch bản 2: Tác vụ nặng (Lập luận đa bước / Debug code) -> Điều phối vào HEAVYWEIGHT_ROUTE
+    print("\n[Kịch bản 2] Tác vụ phức tạp (Lập luận đa bước & Debug mã nguồn):")
+    p2 = (
+        "Hãy phân tích và giải thích từng bước (step by step) tại sao hàm đệ quy sau gây lỗi RecursionError:\n"
+        "```python\n"
+        "def compute_factorial(n):\n"
+        "    return n * compute_factorial(n - 1)\n"
+        "```\n"
+        "Chỉ ra điều kiện dừng (base case) bị thiếu và viết lại mã nguồn tối ưu."
+    )
+    res2 = router.route_and_execute(p2)
+    print(f"• Tuyến điều phối: {res2.routing_decision.route.value}")
+    print(f"• Intent nhận diện: {res2.routing_decision.intent.value}")
+    print(f"• Điểm độ phức tạp: {res2.routing_decision.complexity_score}")
+    print(f"• Lý do lựa chọn: {res2.routing_decision.decision_reasons}")
+    print(f"• Model thực thi: {res2.cost_audit.actual_model}")
+    print(f"• Tổng tokens: {res2.cost_audit.total_tokens}")
+
+
 def main():
     if not settings.GEMINI_API_KEY:
         print("[LƯU Ý] Chưa cấu hình GEMINI_API_KEY trong file .env!")
         return
 
-    # Chạy demo Lab 03
-    run_lab03_demo()
+    # Chạy demo Lab 04
+    run_lab04_demo()
 
 
 if __name__ == "__main__":

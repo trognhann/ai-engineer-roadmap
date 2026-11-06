@@ -12,13 +12,15 @@ ai-engineer-roadmap/
 ├── tests/                         # Unit tests & integration tests (pytest)
 │   ├── __init__.py
 │   ├── test_gateway.py            # Test suite cho ModelGateway & Guardrail (Lab 02)
-│   └── test_product_tagger.py     # Test suite cho Semantic Cache & Tagger (Lab 03)
+│   ├── test_product_tagger.py     # Test suite cho Semantic Cache & Tagger (Lab 03)
+│   └── test_model_router.py       # Test suite cho ModelRouter & Cost Audit (Lab 04)
 ├── src/
 │   ├── config/                    # Cấu hình dự án (Pydantic Settings, .env)
 │   │   ├── __init__.py
 │   │   └── config.py
 │   ├── foundations/               # Module Foundations & Core APIs
 │   │   ├── __init__.py
+│   │   ├── model_router.py        # [LAB 04] Dynamic Semantic Model Router & Cost Optimization
 │   │   ├── product_tagger.py      # [LAB 03] Smart Feature Service & Semantic In-Memory Cache
 │   │   ├── gateway.py             # [LAB 02] Production AI Gateway (SLA, Guardrail, Fallback)
 │   │   ├── base/                  # Thành phần chung dùng theo OOP
@@ -41,7 +43,7 @@ ai-engineer-roadmap/
 ├── .env.example                   # Biến môi trường mẫu
 ├── .env                           # Biến môi trường local (không commit lên git)
 ├── requirements.txt               # Danh sách thư viện phụ thuộc trực tiếp
-├── main.py                        # Entrypoint chạy demo Lab 01, Lab 02 & Lab 03
+├── main.py                        # Entrypoint chạy demo Lab 01, Lab 02, Lab 03 & Lab 04
 └── README.md
 ```
 
@@ -88,6 +90,25 @@ ai-engineer-roadmap/
      * [`ProductMetadata`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/product_tagger.py#L42): `primary_category`, `sub_category`, `tags`, `suggested_title`.
      * [`ContentSafetyAssessment`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/product_tagger.py#L31): `is_safe`, `risk_level` (`LOW`, `MEDIUM`, `HIGH`), `flagged_categories`, `safety_reason`.
    * Tự động lưu vector và metadata vào cache sau khi trích xuất thành công để phục vụ các yêu cầu tiếp theo.
+
+---
+
+### 📌 Lab 04: Dynamic Semantic Model Router & Cost Optimization
+* **Vị trí:** [`src/foundations/model_router.py`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/model_router.py)
+* **Mục tiêu:** Xây dựng module `ModelRouter` tự động phân loại intent và đánh giá độ phức tạp của yêu cầu người dùng, từ đó điều phối đến mô hình tối ưu nhất nhằm tiết kiệm chi phí vận hành.
+
+#### 3 Trụ cột cốt lõi:
+1. **High-Speed Heuristic Classifier ([`HeuristicIntentClassifier`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/model_router.py#L98)):**
+   * Phân loại intent và chấm điểm độ phức tạp (0.0 - 1.0) với tốc độ siêu cao (`latency < 1ms`) bằng Regex và Rule-based Heuristics:
+     * **Nhẹ (< 0.6):** `SUMMARIZATION`, `EXTRACTION`, `TRANSLATION`, `GENERAL_QA`.
+     * **Nặng (>= 0.6):** `CODE_ANALYSIS`, `MULTI_STEP_REASONING`, `COMPLEX_ANALYSIS` (hợp đồng pháp lý, kiến trúc hệ thống).
+2. **Dynamic Routing Strategy:**
+   * **LIGHTWEIGHT_ROUTE:** Điều phối đến các mô hình nhỏ, tốc độ cao (`gemini-3.5-flash-lite`, `gemini-1.5-flash`).
+   * **HEAVYWEIGHT_ROUTE:** Điều phối đến các mô hình năng lực cao (`gemini-2.5-flash`, `gemini-1.5-pro`) có khả năng suy luận sâu.
+   * Tích hợp [`ModelGateway`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/gateway.py) để tự động fallback nếu model chính gặp lỗi quota (`429`) hoặc timeout.
+3. **Pricing Engine & Cost Audit Report ([`PricingEngine`](file:///Users/trognhann/ai-engineer-roadmap/src/foundations/model_router.py#L65)):**
+   * Đo lường chi phí thực tế (`actual_cost_usd`) so với chi phí đối chuẩn giả định nếu luôn gọi model đắt nhất (`benchmark_cost_usd` - Gemini 1.5 Pro).
+   * Báo cáo tỷ lệ tiết kiệm chi phí (`savings_percentage`), chứng minh **tiết kiệm từ 90% - 95% chi phí** cho các tác vụ thông thường.
 
 ---
 
